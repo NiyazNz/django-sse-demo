@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SSE test</title>
+</head>
+<body>
+<h1>Server sent events (SSE) test</h1>
+Open dev tools console to see messages
+<br>
+<br>
+
+Subscribe to
+<button id="listen-time-sse" title="Get server time">Background task</button>
+<button id="listen-redis-sse" title="Listen redis messages">Redis</button>
+<button id="listen-kafka-sse" title="Listen kafka messages">Kafka</button>
+
+<br>
+Open a new tab to <a href="/message/" target="_blank">send messages</a>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelector('#listen-time-sse').addEventListener('click', (e) => {
+            initSse('http://localhost:8000/sse/');
+        })
+        document.querySelector('#listen-redis-sse').addEventListener('click', (e) => {
+            initSse('http://localhost:8000/sse-redis/');
+        })
+        document.querySelector('#listen-kafka-sse').addEventListener('click', (e) => {
+            initSse('http://localhost:8000/sse-kafka/');
+        })
+
+        const initSse = (url) => {
+            if (sse && sse.readyState != sse.CLOSED) {
+                console.log(`Disconnecting ${sse.url}`);
+                sse.close();
+                sse = null;
+            }
+
+            console.log(`Connecting to ${url}`);
+            sse = new EventSource(url);
+            sse.onmessage = m => {
+                console.log(`Received SSE: #${m.lastEventId} - ${m.data}`);
+            }
+            sse.onerror = e => {
+                console.log(e);
+            }
+        }
+
+        let sse;
+        initSse('http://localhost:8000/sse/');
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,4 @@
+-e git+git@github.com:NiyazNz/django.git@serverSentEvents#egg=Django
+uvicorn==0.13.4
+aiokafka==0.7.0
+aioredis==1.3.1

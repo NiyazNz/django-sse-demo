@@ -21,13 +21,13 @@ Open a new tab to <a href="/message/" target="_blank">send messages</a>
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         document.querySelector('#listen-time-sse').addEventListener('click', (e) => {
-            initSse('http://localhost:8000/sse/');
+            initSse('/sse/');
         })
         document.querySelector('#listen-redis-sse').addEventListener('click', (e) => {
-            initSse('http://localhost:8000/sse-redis/');
+            initSse('/sse-redis/');
         })
         document.querySelector('#listen-kafka-sse').addEventListener('click', (e) => {
-            initSse('http://localhost:8000/sse-kafka/');
+            initSse('/sse-kafka/');
         })
 
         const initSse = (url) => {
@@ -48,7 +48,7 @@ Open a new tab to <a href="/message/" target="_blank">send messages</a>
         }
 
         let sse;
-        initSse('http://localhost:8000/sse/');
+        initSse('/sse/');
     });
 </script>
 </body>

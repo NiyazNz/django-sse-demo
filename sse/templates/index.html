@@ -30,17 +30,23 @@ Open a new tab to <a href="/message/" target="_blank">send messages</a>
             initSse('/sse-kafka/');
         })
 
-        const initSse = (url) => {
+        const closeSse = () => {
             if (sse && sse.readyState != sse.CLOSED) {
                 console.log(`Disconnecting ${sse.url}`);
                 sse.close();
                 sse = null;
             }
+        }
+        const initSse = (url) => {
+            closeSse();
 
             console.log(`Connecting to ${url}`);
             sse = new EventSource(url);
             sse.onmessage = m => {
                 console.log(`Received SSE: #${m.lastEventId} - ${m.data}`);
+                if (m.data==='EOF') {
+                    closeSse()
+                }
             }
             sse.onerror = e => {
                 console.log(e);

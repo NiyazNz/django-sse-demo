@@ -1,4 +1,7 @@
 from abc import ABCMeta
+from typing import Any, Union
+
+from django.http.response import ServerSentEventsMessage
 
 
 class ChannelsLayer(metaclass=ABCMeta):
@@ -8,7 +11,7 @@ class ChannelsLayer(metaclass=ABCMeta):
         """
         self.channel_name = channel_name
 
-    async def receive(self):
+    async def receive(self) -> Union[ServerSentEventsMessage, Any]:
         """
         Await and yield a new event message when one is available
         """
@@ -22,7 +25,7 @@ class ChannelsLayer(metaclass=ABCMeta):
         """
         raise NotImplementedError
 
-    async def close(self):
+    async def close(self) -> None:
         """
         Close resources
         """

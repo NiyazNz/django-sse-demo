@@ -8,10 +8,13 @@ from sse.channels import ChannelsLayer
 class KafkaChannelsLayer(ChannelsLayer):
     def __init__(self, channel_name: str, group_id: str = None, url: str = None) -> None:
         super().__init__(channel_name)
+        self._url = url or settings.KAFKA_URL
         self._consumer: AIOKafkaConsumer = None
         self._producer: AIOKafkaProducer = None
-        self._url = url or settings.KAFKA_URL
         self._group_id = group_id
+
+    def __repr__(self):
+        return f"{type(self).__name__}({self._url}/{self.channel_name})"
 
     async def _get_consumer(self) -> AIOKafkaConsumer:
         if not self._consumer:

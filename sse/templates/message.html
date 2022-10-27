@@ -1,66 +1,57 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>SSE test</title>
-</head>
-<body>
-<h1>Send messages</h1>
+{% extends "base.html" %}
 
-<input type="text" id="message" placeholder="Type message">
-<br>
-<button id="send-to-redis" title="Send messages to redis">Send to redis</button>
-<button id="send-to-kafka" title="Send messages to kafka">Send to kafka</button>
-<br>
-<br>
+{% block content %}
+    <h1>Send messages</h1>
 
-Note: messages expire immediately, only active connection will receive them.
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        document.querySelector('#send-to-redis').addEventListener('click', (e) => {
-            const text = document.querySelector('#message').value;
-            sendMessage({broker: 'redis', message: text});
-        })
-        document.querySelector('#send-to-kafka').addEventListener('click', (e) => {
-            const text = document.querySelector('#message').value;
-            sendMessage({broker: 'kafka', message: text});
-        })
+    <input type="text" class="form-control" id="message" placeholder="Type message">
+    <button type="button" class="btn btn-primary"  id="send-to-redis" title="Send messages to redis">Send to redis</button>
+    <button type="button" class="btn btn-primary"  id="send-to-kafka" title="Send messages to kafka">Send to kafka</button>
 
-        const getCookie = (name) => {
-            var cookieValue = null;
-            if (document.cookie && document.cookie !== '') {
-                var cookies = document.cookie.split(';');
-                for (var i = 0; i < cookies.length; i++) {
-                    var cookie = cookies[i].trim();
-                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelector('#send-to-redis').addEventListener('click', (e) => {
+                const text = document.querySelector('#message').value;
+                sendMessage({broker: 'redis', message: text});
+            })
+            document.querySelector('#send-to-kafka').addEventListener('click', (e) => {
+                const text = document.querySelector('#message').value;
+                sendMessage({broker: 'kafka', message: text});
+            })
+
+            const getCookie = (name) => {
+                var cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    var cookies = document.cookie.split(';');
+                    for (var i = 0; i < cookies.length; i++) {
+                        var cookie = cookies[i].trim();
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
                     }
                 }
+                return cookieValue;
             }
-            return cookieValue;
-        }
 
-        const sendMessage = (message) => {
-            fetch('/send/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    "X-CSRFToken": csrftoken,
-                },
-                body: JSON.stringify(message),
-            })
-                .then(response => response.json())
-                .then(data => {
-                    console.log(data)
+            const sendMessage = (message) => {
+                fetch('/send/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        "X-CSRFToken": csrftoken,
+                    },
+                    body: JSON.stringify(message),
                 })
-                .catch((error) => {
-                    console.error('Error:', error);
-                });
-        }
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data)
+                    })
+                    .catch((error) => {
+                        console.error('Error:', error);
+                    });
+            }
 
-        const csrftoken = getCookie('csrftoken');
-    });
-</script>
-</body>
-</html>
+            const csrftoken = getCookie('csrftoken');
+        });
+    </script>
+{% endblock %}
